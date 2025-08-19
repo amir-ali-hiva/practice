@@ -95,14 +95,8 @@ class form(QWidget):
             id = int(self.line_id.text())
             Score = int(self.line_Score.text())
 
+            
 
-            query = f"INSERT INTO Stu_list ('Name','Family','Age','Id','Score') VALUES ('{name}','{family}',{Age},{id},{Score})"
-            with sqlite3.connect("C:/barname nevisy/programing/Python/pythonProject12/practice/practice8_5databais/data_baiss.db") as connection:
-                connection.execute(query)
-                connection.commit()
-
-            #self.select_info()
-            #self.clear_boxes()
             self.show_data()
             self.clear_line()
             msg_box = QMessageBox()
@@ -121,21 +115,14 @@ class form(QWidget):
 
     def update_data(self):
         try:
-            #n = 0
-            #continu_e = ""                               #کد ها برایه ارتقا هستند 
-            #while n == 0 :
+        
             name = self.line_name.text()
             family = self.line_family.text()
             Age = int(self.line_age.text())
             id = int(self.line_id.text())
             Score = int(self.line_Score.text())
-            #continu_e = input("Is the information correct?(yes or no)").lower
-   
-            #if continu_e == "yes":
-            #    n =+ 1
-                #else:
-            #    n = 0
-            query = f"UPDATE Stu_list SET 'Name'='{name}', 'Family'='{family}', 'Age' = '{Age}' 'Score' = '{Score}' WHERE Id = {id}; "
+
+            query = f"UPDATE Stu_list_Tables SET 'Name'='{name}', 'Family'='{family}', 'Age' = '{Age}' 'Score' = '{Score}' WHERE Id = {id}; "
             with sqlite3.connect("C:/barname nevisy/programing/Python/pythonProject12/practice/practice8_5databais/data_baiss.db") as connicat:
                 connicat.execute(query)
                 connicat.commit()
