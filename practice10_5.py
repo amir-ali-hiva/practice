@@ -110,7 +110,7 @@ def insert_stu():
 
 def list_stu():
     try:
-        query = f"SELECT * FROM a;"
+        query = f"SELECT * FROM stu_list;"
 
         with sqlite3.connect("C:/barname nevisy/programing/Python/pythonProject12/practice/practice8_5databais/data_baiss.db") as connicat:    
             cursor = connicat.cursor()               

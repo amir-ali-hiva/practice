@@ -1,14 +1,17 @@
 from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from Bussinesslogic import teacher
+from Bussinesslogic import *
+from DataAccess import *
 import sys
-import os
+import sqlite3
 
 class form(QWidget):
     def __init__(self):
         super().__init__()
         self.resize(500, 500)
         #self.setStyleSheet("background-color: rgb( 232 , 2 , 163 )")
-        def closeEvent(self, event):
-            self.exit_form
+        
 
         main_layout = QGridLayout()
         box_layout = QGridLayout()
@@ -19,27 +22,33 @@ class form(QWidget):
         label = QLabel("Name ")
         box_layout.addWidget(label, 0, 0, 1, 1)
 
-        line = QLineEdit()
-        box_layout.addWidget(line, 0, 1, 1, 1)
+        self.line_name = QLineEdit()
+        box_layout.addWidget(self.line_name, 0, 1, 1, 1)
 
 
         label = QLabel("Family ")
         box_layout.addWidget(label, 1, 0, 1, 1)
 
-        line = QLineEdit()
-        box_layout.addWidget(line, 1, 1, 1, 1)
+        self.line_family = QLineEdit()
+        box_layout.addWidget(self.line_family, 1, 1, 1, 1)
 
         label = QLabel("Id ")
         box_layout.addWidget(label, 2, 0, 1, 1)
 
-        line = QLineEdit()
-        box_layout.addWidget(line, 2, 1, 1, 1)
+        self.line_id = QLineEdit()
+        box_layout.addWidget(self.line_id, 2, 1, 1, 1)
 
         label = QLabel("Age ")
         box_layout.addWidget(label, 3, 0, 1, 1)
 
-        line = QLineEdit()
-        box_layout.addWidget(line, 3, 1, 1, 1)
+        self.line_age = QLineEdit()
+        box_layout.addWidget(self.line_age, 3, 1, 1, 1)
+
+        label = QLabel("Score ")
+        box_layout.addWidget(label, 4, 0, 1, 1)
+
+        self.line_Score = QLineEdit()
+        box_layout.addWidget(self.line_Score, 4, 1, 1, 1)
 
         #طراحی دکمه ها
         buttel = QPushButton("Show all")
@@ -49,12 +58,15 @@ class form(QWidget):
         button_layout.addWidget(buttel, 0, 1 , 1, 1)
 
         buttel = QPushButton("Insert")
+        buttel.clicked.connect(self.insert_data)
         button_layout.addWidget(buttel, 0, 2 , 1, 1)
 
         buttel = QPushButton("Update")
+        buttel.clicked.connect(self.update_data)
         button_layout.addWidget(buttel, 1, 0 , 1, 1)
 
         buttel = QPushButton("Delete")
+        buttel.clicked.connect(self.delete_data)
         button_layout.addWidget(buttel, 1, 1 , 1, 1)
 
         buttel = QPushButton("Exit")
@@ -75,11 +87,92 @@ class form(QWidget):
     def search_data(self):
         pass
     def insert_data(self):
-        pass
+
+        try:      
+            name = self.line_name.text()
+            family = self.line_family.text()
+            Age = int(self.line_age.text())
+            id = int(self.line_id.text())
+            Score = int(self.line_Score.text())
+
+
+            query = f"INSERT INTO Stu_list ('Name','Family','Age','Id','Score') VALUES ('{name}','{family}',{Age},{id},{Score})"
+            with sqlite3.connect("C:/barname nevisy/programing/Python/pythonProject12/practice/practice8_5databais/data_baiss.db") as connection:
+                connection.execute(query)
+                connection.commit()
+
+            #self.select_info()
+            #self.clear_boxes()
+            self.show_data()
+            self.clear_line()
+            msg_box = QMessageBox()
+            msg_box.setText("Operation was successfull!!!")
+            msg_box.exec()
+        except:
+            msg_box = QMessageBox()
+            msg_box.setText("Error was Occured!!!")
+            msg_box.exec()
+            self.clear_line()
+            #t = teacher
+            #message = t.insert_student(name, family, id, Age, Score)
+            #msg_box = QMessageBox()
+            #msg_box.setText(message)
+            #msg_box.exec()
+
     def update_data(self):
-        pass
+        try:
+            #n = 0
+            #continu_e = ""                               #کد ها برایه ارتقا هستند 
+            #while n == 0 :
+            name = self.line_name.text()
+            family = self.line_family.text()
+            Age = int(self.line_age.text())
+            id = int(self.line_id.text())
+            Score = int(self.line_Score.text())
+            #continu_e = input("Is the information correct?(yes or no)").lower
+   
+            #if continu_e == "yes":
+            #    n =+ 1
+                #else:
+            #    n = 0
+            query = f"UPDATE Stu_list SET 'Name'='{name}', 'Family'='{family}', 'Age' = '{Age}' 'Score' = '{Score}' WHERE Id = {id}; "
+            with sqlite3.connect("C:/barname nevisy/programing/Python/pythonProject12/practice/practice8_5databais/data_baiss.db") as connicat:
+                connicat.execute(query)
+                connicat.commit()
+
+            self.show_data()
+            self.clear_line()
+            msg_box = QMessageBox()
+            msg_box.setText("Operation was successfull!!!")
+            msg_box.exec()
+        except:
+            msg_box = QMessageBox()
+            msg_box.setText("Error was Occured!!!")
+            msg_box.exec()
+            self.clear_line()
     def delete_data(self):
-        pass
+        try:
+            id = int(self.line_id.text())
+
+            t = teacher
+            message = t.insert_student(id)
+            msg_box = QMessageBox()
+            msg_box.setText(message)
+            msg_box.exec()
+
+           
+            self.show_data()
+
+            self.clear_line()
+
+        except:
+
+            msg_box = QMessageBox()
+            msg_box.setText("Error was occurred!!!")
+            msg_box.exec()
+
+            self.clear_line()
+
     def exit_form(self):
         result = QMessageBox.question(self,
             "Exit!!!!!???",
@@ -89,6 +182,15 @@ class form(QWidget):
         if result == QMessageBox.StandardButton.Yes:
             
             QApplication.quit() #این روش تمیزتر از exit()
+    
+
+    def clear_line(self):
+        self.line_name.setText("")
+        self.line_family.setText("")
+        self.line_age.setText("")
+        self.line_id.setText("")
+        self.line_Score.setText("")
+    
 
         
 
