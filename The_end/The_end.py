@@ -154,8 +154,8 @@ class form(QWidget):
         try:
             id = int(self.line_id.text())
 
-            t = teacher
-            message = t.insert_student(id)
+            t = manager
+            message = t.delete_stu(id)
             msg_box = QMessageBox()
             msg_box.setText(message)
             msg_box.exec()

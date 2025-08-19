@@ -11,7 +11,7 @@ class Student:
     def __init__(self):
         self.dal = DataAccess()
     
-class maniger :
+class manager :
     def __init__(self) -> None:
         self.dal = DataAccess()    
     def insert_student(self, name, family, id, age, Score):
