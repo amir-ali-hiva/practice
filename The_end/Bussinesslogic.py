@@ -11,9 +11,9 @@ class Student:
     def __init__(self):
         self.dal = DataAccess()
     
-class manager :
-    def __init__(self) -> None:
-        self.dal = DataAccess()    
+class manager:
+    def __init__(self, db_path=None):
+        self.dal = DataAccess(db_path=db_path)    
     def insert_student(self, name, family, id, age, Score):
         query = f"INSERT INTO Stu_list_Tables ('Name','Family','Age','Id','Score') VALUES ('{name}','{family}',{age},{id},{Score});"
         message = self.dal.execute_non_query(query)

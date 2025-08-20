@@ -2,8 +2,8 @@
 import sqlite3
 
 class DataAccess:
-    def __init__(self, db_path):
-        self.db_path = "Stu_list.db"
+    def __init__(self, db_path= "C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/Stu_list.db"):
+
         self.db_path = db_path
     
 

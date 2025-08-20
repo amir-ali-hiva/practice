@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
-from Bussinesslogic import teacher
+from Bussinesslogic import manager
 from Bussinesslogic import *
 from DataAccess import *
 import sys
@@ -9,6 +9,7 @@ import sqlite3
 class form(QWidget):
     def __init__(self):
         super().__init__()
+        self.manager = manager()   # ساخت شیع برایه اتسال به bussinesslogic
         self.resize(500, 500)
         #self.setStyleSheet("background-color: rgb( 232 , 2 , 163 )")
         
@@ -88,78 +89,30 @@ class form(QWidget):
         pass
     def insert_data(self):
 
-        try:      
-            name = self.line_name.text()
-            family = self.line_family.text()
-            Age = int(self.line_age.text())
-            id = int(self.line_id.text())
-            Score = int(self.line_Score.text())
+             
+        name = self.line_name.text()
+        family = self.line_family.text()
+        age = int(self.line_age.text())
+        id = int(self.line_id.text())
+        Score = int(self.line_Score.text())
 
+        message = self.manager.insert_student(name, family, id, age, Score)
             
 
-            self.show_data()
-            self.clear_line()
-            msg_box = QMessageBox()
-            msg_box.setText("Operation was successfull!!!")
-            msg_box.exec()
-        except:
-            msg_box = QMessageBox()
-            msg_box.setText("Error was Occured!!!")
-            msg_box.exec()
-            self.clear_line()
-            #t = teacher
-            #message = t.insert_student(name, family, id, Age, Score)
+        self.show_data()
+        self.clear_line()
+        msg_box = QMessageBox()
+        msg_box.setText(message)
+        msg_box.exec()
+        
+            
             #msg_box = QMessageBox()
             #msg_box.setText(message)
             #msg_box.exec()
-
     def update_data(self):
-        try:
-        
-            name = self.line_name.text()
-            family = self.line_family.text()
-            Age = int(self.line_age.text())
-            id = int(self.line_id.text())
-            Score = int(self.line_Score.text())
-
-            query = f"UPDATE Stu_list_Tables SET 'Name'='{name}', 'Family'='{family}', 'Age' = '{Age}' 'Score' = '{Score}' WHERE Id = {id}; "
-            with sqlite3.connect("C:/barname nevisy/programing/Python/pythonProject12/practice/practice8_5databais/data_baiss.db") as connicat:
-                connicat.execute(query)
-                connicat.commit()
-
-            self.show_data()
-            self.clear_line()
-            msg_box = QMessageBox()
-            msg_box.setText("Operation was successfull!!!")
-            msg_box.exec()
-        except:
-            msg_box = QMessageBox()
-            msg_box.setText("Error was Occured!!!")
-            msg_box.exec()
-            self.clear_line()
+        pass
     def delete_data(self):
-        try:
-            id = int(self.line_id.text())
-
-            t = manager
-            message = t.delete_stu(id)
-            msg_box = QMessageBox()
-            msg_box.setText(message)
-            msg_box.exec()
-
-           
-            self.show_data()
-
-            self.clear_line()
-
-        except:
-
-            msg_box = QMessageBox()
-            msg_box.setText("Error was occurred!!!")
-            msg_box.exec()
-
-            self.clear_line()
-
+        pass
     def exit_form(self):
         result = QMessageBox.question(self,
             "Exit!!!!!???",
@@ -177,9 +130,7 @@ class form(QWidget):
         self.line_age.setText("")
         self.line_id.setText("")
         self.line_Score.setText("")
-    
-
-        
+           
 
 app = QApplication(sys.argv)
 form = form()
