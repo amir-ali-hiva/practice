@@ -101,13 +101,20 @@ class form(QWidget):
 
         self.show_data()
         self.clear_line()
-        self.massege_data()
-        
-            
+        self.massege_data()            
     def update_data(self):
         pass
     def delete_data(self):
-        pass
+        id = int(self.line_id.text())                 #id = int(input("Id for delete: "))
+        
+        self.message = self.manager.delete_stu(id)
+        
+        self.show_data()
+        self.clear_line()
+        self.massege_data() 
+
+
+        
     def exit_form(self):
         result = QMessageBox.question(self,
             "Exit!!!!!???",
