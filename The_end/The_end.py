@@ -11,7 +11,7 @@ class form(QWidget):
         super().__init__()
         self.manager = manager(db_path="C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/Stu_list.db")   # ساخت شیع برایه اتسال به bussinesslogic
         self.resize(500, 500)
-        #self.setStyleSheet("background-color: rgb( 232 , 2 , 163 )")
+        self.setStyleSheet("background-color: rgb( 160, 179, 96 )")
         
 
         main_layout = QGridLayout()
