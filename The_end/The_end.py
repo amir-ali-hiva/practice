@@ -6,6 +6,59 @@ from DataAccess import *
 import sys
 
 
+class Model(QAbstractTableModel):
+    def __init__(self, rows) -> None:
+        super().__init__()
+        self.rows = rows
+
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...):
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                match section:
+                    case 0:
+                        return "Name"
+                    case 1:
+                        return "Family"
+                    case 2:
+                        return "Id"
+                    case 3:
+                        return "Age"
+            if orientation == Qt.Orientation.Vertical:
+                return section + 1
+
+    def data(self, index: QModelIndex, role: int = ...):            # پردازش روی داده ها
+        value = f"{self.rows[index.row()][index.column()]}"
+        if role == Qt.ItemDataRole.DisplayRole:                     # اگر هدفت نمایش داده بود
+            return value
+        
+        #if role == Qt.ItemDataRole.DecorationRole:                  # اگر هدفت گذاشتن آیکون بود
+        #    if str(value).lower() in ["hamid", "alireza", "amir", "ali"]:
+        #        return QIcon("1.png")
+            
+        #if role == Qt.ItemDataRole.BackgroundRole:                  # اگر هدفت تغییر رنگ بک گراند بود
+        #    if index.row() % 2 == 0:
+        #        return QColor(129, 236, 236)
+        #    else:
+        #        return QColor(232, 67, 147)
+            
+        #if role == Qt.ItemDataRole.ForegroundRole:                  # اگر هدفت تغییر رنگ متن بود
+        #    if str(value).lower() == "hamid":
+        #        return QColor("blue")
+            
+        if role == Qt.ItemDataRole.TextAlignmentRole:               # اگر هدفت تراز متن بود
+            return Qt.AlignmentFlag.AlignCenter
+        
+        #if role == Qt.ItemDataRole.FontRole:                        # اگر هدفت تغییر فونت باشد
+        #    if str(value).lower() == "hamid":
+        #        return QFont("cursive", 12, 4, italic=True)
+            
+    def rowCount(self, parent: QModelIndex = ...) -> int:           # باید تعداد سطرها را بدهد
+        return len(self.rows)
+    
+    def columnCount(self, parent: QModelIndex = ...) -> int:        # باید تعداد ستون ها را بدهد
+        return len(self.rows[0])
+
+
 class form(QWidget):
     def __init__(self):
         super().__init__()
@@ -53,6 +106,7 @@ class form(QWidget):
 
         #طراحی دکمه ها
         buttel = QPushButton("Show all")
+        buttel.clicked.connect(self.show_data)
         button_layout.addWidget(buttel, 0, 0 , 1, 1)
 
         buttel = QPushButton("Search")
@@ -84,7 +138,14 @@ class form(QWidget):
 
         self.setLayout(main_layout)
     def show_data(self):
-        pass
+
+        self.message = self.manager.show_stu()
+
+
+        self.rows = self.message.fetchall()
+        model = Model(self.rows)
+        self.table.setModel(model)
+        self.set_columns_width()
     def search_data(self):
         pass
     def insert_data(self):
