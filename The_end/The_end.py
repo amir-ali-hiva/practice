@@ -9,7 +9,7 @@ import sqlite3
 class form(QWidget):
     def __init__(self):
         super().__init__()
-        self.manager = manager()   # ساخت شیع برایه اتسال به bussinesslogic
+        self.manager = manager(db_path="C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/Stu_list.db")   # ساخت شیع برایه اتسال به bussinesslogic
         self.resize(500, 500)
         #self.setStyleSheet("background-color: rgb( 232 , 2 , 163 )")
         
@@ -96,19 +96,14 @@ class form(QWidget):
         id = int(self.line_id.text())
         Score = int(self.line_Score.text())
 
-        message = self.manager.insert_student(name, family, id, age, Score)
+        self.message = self.manager.insert_student(name, family, id, age, Score)
             
 
         self.show_data()
         self.clear_line()
-        msg_box = QMessageBox()
-        msg_box.setText(message)
-        msg_box.exec()
+        self.massege_data()
         
             
-            #msg_box = QMessageBox()
-            #msg_box.setText(message)
-            #msg_box.exec()
     def update_data(self):
         pass
     def delete_data(self):
@@ -130,7 +125,11 @@ class form(QWidget):
         self.line_age.setText("")
         self.line_id.setText("")
         self.line_Score.setText("")
-           
+
+    def massege_data(self):
+        msg_box = QMessageBox()
+        msg_box.setText(self.message)
+        msg_box.exec()       
 
 app = QApplication(sys.argv)
 form = form()
