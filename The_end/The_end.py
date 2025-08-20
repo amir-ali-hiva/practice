@@ -4,7 +4,7 @@ from Bussinesslogic import manager
 from Bussinesslogic import *
 from DataAccess import *
 import sys
-import sqlite3
+
 
 class form(QWidget):
     def __init__(self):
