@@ -45,11 +45,11 @@ class form(QWidget):
         self.line_age = QLineEdit()
         box_layout.addWidget(self.line_age, 3, 1, 1, 1)
 
-        label = QLabel("Score ")
+        label = QLabel("score ")
         box_layout.addWidget(label, 4, 0, 1, 1)
 
-        self.line_Score = QLineEdit()
-        box_layout.addWidget(self.line_Score, 4, 1, 1, 1)
+        self.line_score = QLineEdit()
+        box_layout.addWidget(self.line_score, 4, 1, 1, 1)
 
         #طراحی دکمه ها
         buttel = QPushButton("Show all")
@@ -88,33 +88,49 @@ class form(QWidget):
     def search_data(self):
         pass
     def insert_data(self):
+        try:
+            name = self.line_name.text()
+            family = self.line_family.text()
+            age = int(self.line_age.text())
+            id = int(self.line_id.text())
+            score = int(self.line_score.text())
 
-             
-        name = self.line_name.text()
-        family = self.line_family.text()
-        age = int(self.line_age.text())
-        id = int(self.line_id.text())
-        Score = int(self.line_Score.text())
-
-        self.message = self.manager.insert_student(name, family, id, age, Score)
+            self.message = self.manager.insert_student(name, family, id, age, score)
             
 
-        self.show_data()
-        self.clear_line()
-        self.massege_data()            
+            self.show_data()
+            self.clear_line()
+            self.massege_data() 
+        except:
+            pass           
     def update_data(self):
-        pass
+        try:
+    
+            id = self.line_id.text()#id = int(input("ID of the person you want to update: "))
+            name = self.line_name.text()#name = input("Name: ")
+            family = self.line_family.text()
+            age = int(self.line_age.text())
+            score = int(self.line_score.text())
+       
+            self.message = self.manager.update_stu(name, family, id, age, score)
+
+            self.show_data()
+            self.clear_line()
+            self.massege_data()
+        except:
+            pass
     def delete_data(self):
-        id = int(self.line_id.text())                 #id = int(input("Id for delete: "))
+        try:
+            id = int(self.line_id.text())                 #id = int(input("Id for delete: "))
         
-        self.message = self.manager.delete_stu(id)
+            self.message = self.manager.delete_stu(id)
         
-        self.show_data()
-        self.clear_line()
-        self.massege_data() 
-
-
+            self.show_data()
+            self.clear_line()
+            self.massege_data() 
         
+        except:
+            pass
     def exit_form(self):
         result = QMessageBox.question(self,
             "Exit!!!!!???",
@@ -131,7 +147,7 @@ class form(QWidget):
         self.line_family.setText("")
         self.line_age.setText("")
         self.line_id.setText("")
-        self.line_Score.setText("")
+        self.line_score.setText("")
 
     def massege_data(self):
         msg_box = QMessageBox()

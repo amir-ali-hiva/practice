@@ -3,8 +3,8 @@ from DataAccess import DataAccess
 class teacher:
     def __init__(self) -> None:
         self.dal = DataAccess()
-    def insert_student(self, name, family, id, age, Score):
-        query = f"INSERT INTO Stu_list_Tables ('Name','Family','Age','Id','Score') VALUES ('{name}','{family}',{age},{id},{Score});"
+    def insert_student(self, name, family, id, age, score):
+        query = f"INSERT INTO Stu_list_Tables ('Name','Family','Age','Id','Score') VALUES ('{name}','{family}',{age},{id},{score});"
         message = self.dal.execute_non_query(query)
         return message
 class Student:
@@ -12,10 +12,10 @@ class Student:
         self.dal = DataAccess()
     
 class manager:
-    def __init__(self, db_path=None):
+    def __init__(self, db_path="C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/Stu_list.db"):
         self.dal = DataAccess(db_path=db_path)    
-    def insert_student(self, name, family, id, age, Score):
-        query = f"INSERT INTO Stu_list_Tables ('Name','Family','Age','Id','Score') VALUES ('{name}','{family}',{age},{id},{Score});"
+    def insert_student(self, name, family, id, age, score):
+        query = f"INSERT INTO Stu_list_Tables ('Name','Family','Age','Id','Score') VALUES ('{name}','{family}',{age},{id},{score});"
         message = self.dal.execute_non_query(query)
         return message
     
@@ -26,5 +26,9 @@ class manager:
     def show_stu(self):
         query = "SELECT * FROM Stu_list_Tables;"
         message = self.dal.execute_query(query)
+        return message
+    def update_stu(self, name, family, id, age, score):
+        query =  f"UPDATE Stu_list_Tables SET 'Name'='{name}', 'Family'='{family}','Score'='{score}' ,'Age' = '{age}' WHERE Id = {id}; "
+        message = self.dal.execute_non_query(query)
         return message
 
