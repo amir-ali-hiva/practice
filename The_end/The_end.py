@@ -10,11 +10,12 @@ import re
 
 
 
+
 class form(QWidget):
     def __init__(self):
         super().__init__()
         self.manager = manager(db_path="C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/Stu_list.db")   # ساخت شیع برایه اتسال به bussinesslogic
-        self.resize(500, 500)
+        self.resize(600, 600)
         self.setStyleSheet("background-color: rgb( 160, 179, 96 )")
         
         radios_layout = QGridLayout()
@@ -92,10 +93,12 @@ class form(QWidget):
         buttel.clicked.connect(self.exit_form)
         button_layout.addWidget(buttel, 1, 2 , 1, 1)
 
-        buttel = QPushButton("Login")
+        buttel = QPushButton("Log in")
+        buttel.clicked.connect(self.loging)
         button_layout.addWidget(buttel, 1, 3, 1, 1)
 
         buttel = QPushButton("Sign in")
+        buttel.clicked.connect(self.sign_in)
         button_layout.addWidget(buttel, 0, 3, 1, 1)
                #*******************************************************************************
         radio = QRadioButton("Starts With")
@@ -124,11 +127,66 @@ class form(QWidget):
         main_layout.addLayout(radios_layout, 3, 0)
         widget = QWidget()
         self.setLayout(main_layout)
-    
+
+    #def loging(self):
+    #    یه مسیج باکس باز شه اول بین معلم و منیجر و دانش اموز انتخاب کنه و یه رمز و نام کار بری هم ای دی باشه برایه دانش اموز 
+    def loging(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Login")
+        dialog.resize(300, 150)
+
+        layout = QVBoxLayout()
+
+    # انتخاب نقش
+        user_label = QLabel("Select user type:")
+        layout.addWidget(user_label)
+
+        user_combo = QComboBox()
+        user_combo.addItems(["Manager", "Teacher", "Student"])
+        layout.addWidget(user_combo)
+
+    # فیلد نام کاربری و رمز عبور (فقط برای دانش‌آموز)
+        username_label = QLabel("Username:")
+        username_edit = QLineEdit()
+        password_label = QLabel("Password:")
+        password_edit = QLineEdit()
+        password_edit.setEchoMode(QLineEdit.EchoMode.Password)
+
+        layout.addWidget(username_label)
+        layout.addWidget(username_edit)
+        layout.addWidget(password_label)
+        layout.addWidget(password_edit)
+
+    # دکمه‌های تایید و لغو
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        buttons.accepted.connect(dialog.accept)
+        buttons.rejected.connect(dialog.reject)
+        layout.addWidget(buttons)
+
+        dialog.setLayout(layout)
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            user_type = user_combo.currentText()
+
+            if user_type == "Manager":
+                self.user = self.manager   # از قبل ساختی
+                QMessageBox.information(self, "Login", "Manager login successful")
+
+            elif user_type == "Teacher":
+                self.user = teacher()      # باید کلاس teacher توی Businesslogic تعریف شده باشه
+                QMessageBox.information(self, "Login", "Teacher login successful")
+
+            elif user_type == "Student":
+                username = username_edit.text()
+                password = password_edit.text()
+                self.user = Student(username, password)  # باید کلاس Student هم داشته باشی
+                QMessageBox.information(self, "Login", f"Student login:\nUsername: {username}")
+
+    def sign_in(self):
+        QMessageBox.warning(self, "Sign in Error", str("This button belongs to God. Please log in."))
     def set_columns_width(self):
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-
     def show_data(self):
 
         self.rows = self.manager.show_stu()
@@ -196,7 +254,7 @@ class form(QWidget):
             id = int(self.line_id.text())
             score = int(self.line_score.text())
 
-            self.message = self.manager.insert_student(name, family, id, age, score)
+            self.message = self.user.insert_student(name, family, id, age, score)
             
 
             self.show_data()
