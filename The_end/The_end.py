@@ -54,7 +54,7 @@ class form(QWidget):
         #self.line_age.textChanged.connect(self.only_digit)
         box_layout.addWidget(self.line_age, 3, 1, 1, 1)
 
-        label = QLabel("score ")
+        label = QLabel("score")
         box_layout.addWidget(label, 4, 0, 1, 1)
 
         self.line_score = QLineEdit()
@@ -62,12 +62,24 @@ class form(QWidget):
         #self.line_score.addItems(QColor(0,0,0))
         box_layout.addWidget(self.line_score, 4, 1, 1, 1)
 
-        label = QLabel("Filter: ")
+        label = QLabel("Salary ")
         box_layout.addWidget(label, 5, 0, 1, 1)
+
+        self.line_salary = QLineEdit()
+        box_layout.addWidget(self.line_salary, 5, 1, 1, 1)
+
+        label = QLabel("Time ")
+        box_layout.addWidget(label, 6, 0, 1, 1)
+
+        self.line_time = QLineEdit()
+        box_layout.addWidget(self.line_time, 6, 1, 1, 1)
+
+        label = QLabel("Filter: ")
+        box_layout.addWidget(label, 7, 0, 1, 1)
 
         self.combo_box = QComboBox()
         self.combo_box.addItems(["------------","Name","Family","Id","Age","Score"])
-        box_layout.addWidget(self.combo_box, 5, 1, 1, 1)
+        box_layout.addWidget(self.combo_box, 7, 1, 1, 1)
 
         #طراحی دکمه ها
 
@@ -104,11 +116,11 @@ class form(QWidget):
         button_layout.addWidget(buttel, 0, 3, 1, 1)
                                                         #/////////////////////////
         buttel = QPushButton("Teacher_list")
-        buttel.clicked.connect(self.sign_in)
+        buttel.clicked.connect(self.teacher_list)
         button_layout.addWidget(buttel, 2, 0, 1, 1)
 
         buttel = QPushButton("Insert_Teacher")
-        buttel.clicked.connect(self.sign_in)
+        buttel.clicked.connect(self.insert_teacher)
         button_layout.addWidget(buttel, 2, 1, 1, 1)
 
         buttel = QPushButton("Delete_Teacher")
@@ -116,7 +128,7 @@ class form(QWidget):
         button_layout.addWidget(buttel, 2, 2, 1, 1)
 
         buttel = QPushButton("Update_Teacher")
-        buttel.clicked.connect(self.sign_in)
+        buttel.clicked.connect(self.update_tch)
         button_layout.addWidget(buttel, 2, 3, 1, 1)
 
                #*******************************************************************************
@@ -134,7 +146,7 @@ class form(QWidget):
 
        
         self.table = QTableView()
-        self.table.setIconSize(QSize(48, 48))   # آیکن‌ها بشن 48x48
+        self.table.setIconSize(QSize(40, 50))   # آیکن‌ها بشن 48x48
         self.table.verticalHeader().setDefaultSectionSize(35)  # ارتفاع هر ردیف 50 بشه
         self.table.doubleClicked.connect(self.show_data_topel)
         tables_layout.addWidget(self.table, 0, 0, 1, 1)
@@ -148,7 +160,16 @@ class form(QWidget):
         self.setLayout(main_layout)
 
     def teacher_list(self):
-        pass
+        try:
+            self.rows = self.user.show_tch()
+            if isinstance(self.rows, str):  # اگر خطا برگردوند
+                QMessageBox.critical(self, "Error", self.rows)
+                return
+            model = Model_ch(self.rows)
+            self.table.setModel(model)
+            self.set_columns_width()
+        except:
+            pass
     def teacher_delete(self):
         try:
             id = int(self.line_id.text())                 
@@ -162,7 +183,37 @@ class form(QWidget):
         except Exception as e:
             QMessageBox.warning(self, "Delete Error", str(e))
     def insert_teacher(self):
-        pass
+        try:
+            name = self.line_name.text()
+            family = self.line_family.text()
+            time = int(self.line_time.text())
+            id = int(self.line_id.text())
+            salary = int(self.line_salary.text())
+
+            self.message = self.user.insert_tch(name, family, id, time, salary)
+            
+
+            self.teacher_list()
+            self.clear_line()
+            self.massege_data() 
+        except Exception as e:
+            QMessageBox.warning(self, "Insert Error", str(e))     
+    def update_tch(self):
+        try:
+    
+            id = self.line_id.text()#id = int(input("ID of the person you want to update: "))
+            name = self.line_name.text()#name = input("Name: ")
+            family = self.line_family.text()
+            salary = int(self.line_salary.text())
+            time = int(self.line_time.text())
+       
+            self.message = self.user.update_tch(name, family, id, salary, time)
+
+            self.teacher_list()
+            self.clear_line()
+            self.massege_data()
+        except Exception as e:
+            QMessageBox.warning(self, "Update Error", str(e))
 
     def loging(self):
     #   ---------------------------------------------------------------------------------------------------------------------------
@@ -223,7 +274,7 @@ class form(QWidget):
             if isinstance(self.rows, str):  # اگر خطا برگردوند
                 QMessageBox.critical(self, "Error", self.rows)
                 return
-            model = Model(self.rows)
+            model = Model_stu(self.rows)
             self.table.setModel(model)
             self.set_columns_width()
         except:
@@ -347,6 +398,8 @@ class form(QWidget):
         self.line_age.setText("")
         self.line_id.setText("")
         self.line_score.setText("")
+        self.line_salary.setText("")
+        self.line_time.setText("")
 
     def massege_data(self):
         msg_box = QMessageBox()
@@ -359,7 +412,7 @@ class form(QWidget):
         #self.line_age.setText(new_text)
         #self.line_score.setText(new_text)       
 
-class Model(QAbstractTableModel):
+class Model_stu(QAbstractTableModel):
     def __init__(self, rows) -> None:
         super().__init__()
         self.rows = rows
@@ -394,6 +447,65 @@ class Model(QAbstractTableModel):
                     return QIcon("C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/accept.png")
                 else:
                     return QIcon("C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/rejected.png")
+
+
+            
+        if role == Qt.ItemDataRole.BackgroundRole:  #color for backgrond tabels
+            if index.row() % 2 == 0:
+                return QColor(139, 147, 255)
+            else:
+                return QColor(255, 113, 205)
+            
+        if role == Qt.ItemDataRole.ForegroundRole:  # color tabels txet
+            if index.row() % 2 == 0:
+                return QColor(84, 18, 18)
+            else:
+                return QColor(30, 3, 66)
+            
+        if role == Qt.ItemDataRole.TextAlignmentRole:  # اگر هدفت وسط چین متن بود
+            return Qt.AlignmentFlag.AlignCenter
+        
+        if role == Qt.ItemDataRole.FontRole:              #  font txet    
+            return QFont("Arial", 10, 8, italic=False)
+            
+    def rowCount(self, parent: QModelIndex = ...) :          
+        return len(self.rows)      #len اندازه را میده
+    
+    def columnCount(self, parent: QModelIndex = ...):        
+        return len(self.rows[0])
+class Model_ch(QAbstractTableModel):
+    def __init__(self, rows) -> None:
+        super().__init__()
+        self.rows = rows
+
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...):
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                match section:
+                    case 0:
+                        return "Id"
+                    case 1:
+                        return "Name"
+                    case 2:
+                        return "Family"
+                    case 3:
+                        return "Salary"
+                    case 4:
+                        return "Time Class"
+            if orientation == Qt.Orientation.Vertical:
+                return section + 1
+
+    def data(self, index: QModelIndex, role: int = ...):    # پردازش روی داده ها
+        value = f"{self.rows[index.row()][index.column()]}"
+        if role == Qt.ItemDataRole.DisplayRole:                     
+            return value
+        
+
+        if role == Qt.ItemDataRole.DecorationRole:
+            if index.column() == 4:   # ستون Score
+                score = int(self.rows[index.row()][index.column()])
+                if 90 >= 70:                   #***********************************/چرا کار نمیکنه\*****************************
+                    return QIcon("C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/teacher.png")
 
 
             

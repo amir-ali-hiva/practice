@@ -33,7 +33,20 @@ class teacher:
         return message
     def insert_student(self, name, family, id, age, score):
         message = "You must tell the manager to insert ."
-        return message        
+        return message 
+    def delete_tch(self, id):
+        message = "You must tell the manager to delete ."
+        return message  
+    def show_tch(self):
+        query = "SELECT * FROM Teacher_list_Tables;"
+        message = self.dal.execute_query(query)
+        return message  
+    def insert_tch(self, name, family, id, time, salary):
+        message = "You must tell the manager to insert ."
+        return message
+    def update_tch(self, name, family, id, time, salary):
+        message = "You must tell the manager to update ."
+        return message    
 class manager:
     def __init__(self, db_path="C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/Stu_list.db"):
         self.dal = DataAccess(db_path=db_path)    
@@ -73,7 +86,18 @@ class manager:
         query = f"DELETE FROM Teacher_list_Tables WHERE Id={id}"
         message = self.dal.execute_non_query(query)
         return message
-
+    def show_tch(self):
+        query = "SELECT * FROM Teacher_list_Tables;"
+        message = self.dal.execute_query(query)
+        return message
+    def insert_tch(self, name, family, id, time, salary):
+        query = f"INSERT INTO Teacher_list_Tables ('Name','Family','Id','Salary','Time Class') VALUES ('{name}','{family}',{id},{salary},{time});"
+        message = self.dal.execute_non_query(query)
+        return message
+    def update_tch(self, name, family, id, time, salary):
+        query =  f"UPDATE Teacher_list_Tables SET 'Name'='{name}', 'Family'='{family}','Time Class'='{time}' ,'Salary' = '{salary}' WHERE Id = {id}; "
+        message = self.dal.execute_non_query(query)
+        return message  
 class Student:
     def __init__(self, db_path="C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/Stu_list.db"):
         self.dal = DataAccess(db_path=db_path)
@@ -103,4 +127,20 @@ class Student:
     def delete_stu(self, id):
         message = "You must tell the manager to delete ."
         return message 
+    def update_stu(self, name, family, id, age, score):
+        message = "You must tell the teacher to update ."
+        return message
+    def show_tch(self):
+        message = "This panel is not designed for students!!!"
+        return message 
+    def delete_tch(self):
+        message = "This panel is not designed for students!!!"
+        return message 
+    def update_tch(self):
+        message = "This panel is not designed for students!!!"
+        return message 
+    def insert_tch(self):
+        message = "This panel is not designed for students!!!"
+        return message 
+      
         
