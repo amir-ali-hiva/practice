@@ -8,68 +8,6 @@ from DataAccess import *
 import sys
 
 
-class Model(QAbstractTableModel):
-    def __init__(self, rows) -> None:
-        super().__init__()
-        self.rows = rows
-
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...):
-        if role == Qt.ItemDataRole.DisplayRole:
-            if orientation == Qt.Orientation.Horizontal:
-                match section:
-                    case 0:
-                        return "Id"
-                    case 1:
-                        return "Name"
-                    case 2:
-                        return "Family"
-                    case 3:
-                        return "Age"
-                    case 4:
-                        return "Score"
-            if orientation == Qt.Orientation.Vertical:
-                return section + 1
-
-    def data(self, index: QModelIndex, role: int = ...):    # پردازش روی داده ها
-        value = f"{self.rows[index.row()][index.column()]}"
-        if role == Qt.ItemDataRole.DisplayRole:                     
-            return value
-        
-
-        if role == Qt.ItemDataRole.DecorationRole:
-            if index.column() == 4:   # ستون Score
-                score = int(self.rows[index.row()][index.column()])
-                if score >= 70:                   #***********************************/چرا کار نمیکنه\*****************************
-                    return QIcon("accept.png")
-                else:
-                    return QIcon("rejected.png")
-
-
-            
-        if role == Qt.ItemDataRole.BackgroundRole:  #color for backgrond tabels
-            if index.row() % 2 == 0:
-                return QColor(139, 147, 255)
-            else:
-                return QColor(255, 113, 205)
-            
-        if role == Qt.ItemDataRole.ForegroundRole:  # color tabels txet
-            if index.row() % 2 == 0:
-                return QColor(84, 18, 18)
-            else:
-                return QColor(30, 3, 66)
-            
-        if role == Qt.ItemDataRole.TextAlignmentRole:  # اگر هدفت وسط چین متن بود
-            return Qt.AlignmentFlag.AlignCenter
-        
-        if role == Qt.ItemDataRole.FontRole:              #  font txet    
-            return QFont("Arial", 10, 8, italic=False)
-            
-    def rowCount(self, parent: QModelIndex = ...) :          
-        return len(self.rows)      #len اندازه را میده
-    
-    def columnCount(self, parent: QModelIndex = ...):        
-        return len(self.rows[0])
-
 
 class form(QWidget):
     def __init__(self):
@@ -151,7 +89,6 @@ class form(QWidget):
         #main_layout.addLayout(tables_layout, 3, 0)
         widget = QWidget()
         self.setLayout(main_layout)
-        #self.setCentralWidget(widget)
     
     def set_columns_width(self):
         header = self.table.horizontalHeader()
@@ -247,6 +184,68 @@ class form(QWidget):
         msg_box = QMessageBox()
         msg_box.setText(self.message)
         msg_box.exec()       
+
+class Model(QAbstractTableModel):
+    def __init__(self, rows) -> None:
+        super().__init__()
+        self.rows = rows
+
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...):
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                match section:
+                    case 0:
+                        return "Id"
+                    case 1:
+                        return "Name"
+                    case 2:
+                        return "Family"
+                    case 3:
+                        return "Age"
+                    case 4:
+                        return "Score"
+            if orientation == Qt.Orientation.Vertical:
+                return section + 1
+
+    def data(self, index: QModelIndex, role: int = ...):    # پردازش روی داده ها
+        value = f"{self.rows[index.row()][index.column()]}"
+        if role == Qt.ItemDataRole.DisplayRole:                     
+            return value
+        
+
+        if role == Qt.ItemDataRole.DecorationRole:
+            if index.column() == 4:   # ستون Score
+                score = int(self.rows[index.row()][index.column()])
+                if score >= 70:                   #***********************************/چرا کار نمیکنه\*****************************
+                    return QIcon("accept.png")
+                else:
+                    return QIcon("rejected.png")
+
+
+            
+        if role == Qt.ItemDataRole.BackgroundRole:  #color for backgrond tabels
+            if index.row() % 2 == 0:
+                return QColor(139, 147, 255)
+            else:
+                return QColor(255, 113, 205)
+            
+        if role == Qt.ItemDataRole.ForegroundRole:  # color tabels txet
+            if index.row() % 2 == 0:
+                return QColor(84, 18, 18)
+            else:
+                return QColor(30, 3, 66)
+            
+        if role == Qt.ItemDataRole.TextAlignmentRole:  # اگر هدفت وسط چین متن بود
+            return Qt.AlignmentFlag.AlignCenter
+        
+        if role == Qt.ItemDataRole.FontRole:              #  font txet    
+            return QFont("Arial", 10, 8, italic=False)
+            
+    def rowCount(self, parent: QModelIndex = ...) :          
+        return len(self.rows)      #len اندازه را میده
+    
+    def columnCount(self, parent: QModelIndex = ...):        
+        return len(self.rows[0])
 
 app = QApplication(sys.argv)
 form = form()
