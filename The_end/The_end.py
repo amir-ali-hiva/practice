@@ -19,9 +19,9 @@ class form(QWidget):
         
         radios_layout = QGridLayout()
         main_layout = QGridLayout()
-        box_layout = QGridLayout()
         button_layout = QGridLayout()
         tables_layout = QGridLayout()
+        box_layout = QGridLayout()
 
         #label and box
         label = QLabel("Name ")
@@ -67,6 +67,7 @@ class form(QWidget):
         box_layout.addWidget(self.combo_box, 5, 1, 1, 1)
 
         #طراحی دکمه ها
+
         buttel = QPushButton("Show all")
         buttel.clicked.connect(self.show_data)
         button_layout.addWidget(buttel, 0, 0 , 1, 1)
@@ -91,6 +92,12 @@ class form(QWidget):
         buttel.clicked.connect(self.exit_form)
         button_layout.addWidget(buttel, 1, 2 , 1, 1)
 
+        buttel = QPushButton("Login")
+        button_layout.addWidget(buttel, 1, 3, 1, 1)
+
+        buttel = QPushButton("Sign in")
+        button_layout.addWidget(buttel, 0, 3, 1, 1)
+               #*******************************************************************************
         radio = QRadioButton("Starts With")
         radios_layout.addWidget(radio, 0, 0, 1, 1)
 
@@ -103,9 +110,10 @@ class form(QWidget):
         radio = QRadioButton("Equals")
         radios_layout.addWidget(radio, 0, 3, 1, 1)
 
+       
         self.table = QTableView()
         self.table.setIconSize(QSize(48, 48))   # آیکن‌ها بشن 48x48
-        self.table.verticalHeader().setDefaultSectionSize(50)  # ارتفاع هر ردیف 50 بشه
+        self.table.verticalHeader().setDefaultSectionSize(35)  # ارتفاع هر ردیف 50 بشه
         self.table.doubleClicked.connect(self.show_data_topel)
         tables_layout.addWidget(self.table, 0, 0, 1, 1)
 
@@ -113,7 +121,7 @@ class form(QWidget):
         main_layout.addLayout(box_layout, 0, 0)#bakes va laibel 
         main_layout.addLayout(button_layout, 1, 0) #دکمه
         main_layout.addLayout(tables_layout, 2, 0)  # سرچ                  سرج
-        #main_layout.addLayout(tables_layout, 3, 0)
+        main_layout.addLayout(radios_layout, 3, 0)
         widget = QWidget()
         self.setLayout(main_layout)
     
@@ -137,55 +145,47 @@ class form(QWidget):
         #self.set_columns_width()
     def search_data(self):
         try:
-            filter_number = "0" # input("[0:Name, 1:Family, 2:Age, 3:Id]: ")
-            condition_number = "0" # input("[0:Starts With, 1: Ends With, 2: Contains, 3:Equals]: ")
+       
+            column = self.combo_box.currentText()
+            if column == "------------":
+                QMessageBox.warning(self, "Search Error", "Please select a filter column")
+                return
 
-            query = f"SELECT * FROM TBLStudents Where"
-            match filter_number:
-                case "0":
-                    filter = "Id"
+       
+            match column:
+                case "Id":
                     value = self.line_id.text()
-                case "1":
-                    filter = "Name"
+                case "Name":
                     value = self.line_name.text()
-                case "2":
-                    filter = "Family"
+                case "Family":
                     value = self.line_family.text()
-                case "3":
-                    filter = "Age"
+                case "Age":
                     value = self.line_age.text()
-                case "4":
-                    filter = "Score"
+                case "Score":
                     value = self.line_score.text()
-
                 case _:
-                    QMessageBox.warning(self, "Search Error", str(e))
+                    QMessageBox.warning(self, "Search Error", "Invalid filter selected")
                     return
 
-            match condition_number:
-                case "0":
-                    query = f"{query} {filter} LIKE '{value}%'"
-                case "1":
-                    query = f"{query} {filter} LIKE '%{value}'"
-                case "2":
-                    query = f"{query} {filter} LIKE '%{value}%'"
-                case "3":
-                    if filter in ["Age", "Id","Score"]:
-                        query = f"{query} {filter} = {value}"
-                    else:
-                        query = f"{query} {filter} = '{value}'"
-                case _:
-                    QMessageBox.warning(self, "Search Error", str(e))
-                    return
-            
-            with sqlite3.connect("DBStudents.db") as connection:
-                cursor = connection.cursor()
-                results = cursor.execute(query)
-                self.rows = results.fetchall()
+  
+            condition = ""
+            for rb in self.findChildren(QRadioButton):
+                if rb.isChecked():
+                    condition = rb.text()
+                    break
+
+            if not condition:
+                QMessageBox.warning(self, "Search Error", "Please select a condition")
+                return
+
+     
+            self.rows = self.manager.serch_stu(column, value, condition)
+
+    
             model = Model(self.rows)
             self.table.setModel(model)
             self.set_columns_width()
-                
+
         except Exception as e:
             QMessageBox.warning(self, "Search Error", str(e))
     def insert_data(self):

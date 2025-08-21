@@ -36,6 +36,25 @@ class manager:
         query =  f"UPDATE Stu_list_Tables SET 'Name'='{name}', 'Family'='{family}','Score'='{score}' ,'Age' = '{age}' WHERE Id = {id}; "
         message = self.dal.execute_non_query(query)
         return message
+    
+    def serch_stu(self, column, value, condition):
+        query = f"SELECT * FROM Stu_list_Tables WHERE "
+        match condition:
+            case "Starts With":
+                query += f"{column} LIKE '{value}%'"
+            case "Ends With":
+                query += f"{column} LIKE '%{value}'"
+            case "Contains":
+                query += f"{column} LIKE '%{value}%'"
+            case "Equals":
+                if column in ["Id", "Age", "Score"]:
+                    query += f"{column} = {value}"
+                else:
+                    query += f"{column} = '{value}'"
+        result = self.dal.execute_query(query)
+        return result
+
+
 
 
 class Student:
