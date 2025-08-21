@@ -128,16 +128,15 @@ class form(QWidget):
         widget = QWidget()
         self.setLayout(main_layout)
 
-    #def loging(self):
-    #    یه مسیج باکس باز شه اول بین معلم و منیجر و دانش اموز انتخاب کنه و یه رمز و نام کار بری هم ای دی باشه برایه دانش اموز 
     def loging(self):
+    #   ---------------------------------------------------------------------------------------------------------------------------
         dialog = QDialog(self)
         dialog.setWindowTitle("Login")
         dialog.resize(300, 150)
 
         layout = QVBoxLayout()
 
-    # انتخاب نقش
+    
         user_label = QLabel("Select user type:")
         layout.addWidget(user_label)
 
@@ -188,14 +187,16 @@ class form(QWidget):
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
     def show_data(self):
-
-        self.rows = self.manager.show_stu()
-        if isinstance(self.rows, str):  # اگر خطا برگردوند
-            QMessageBox.critical(self, "Error", self.rows)
-            return
-        model = Model(self.rows)
-        self.table.setModel(model)
-        self.set_columns_width()
+        try:
+            self.rows = self.user.show_stu()
+            if isinstance(self.rows, str):  # اگر خطا برگردوند
+                QMessageBox.critical(self, "Error", self.rows)
+                return
+            model = Model(self.rows)
+            self.table.setModel(model)
+            self.set_columns_width()
+        except:
+            pass
      
         #self.rows = self.manager.show_stu()
         #model = Model(self.rows) 
@@ -237,7 +238,7 @@ class form(QWidget):
                 return
 
      
-            self.rows = self.manager.serch_stu(column, value, condition)
+            self.rows = self.user.serch_stu(column, value, condition)
 
     
             model = Model(self.rows)
@@ -271,7 +272,7 @@ class form(QWidget):
             age = int(self.line_age.text())
             score = int(self.line_score.text())
        
-            self.message = self.manager.update_stu(name, family, id, age, score)
+            self.message = self.user.update_stu(name, family, id, age, score)
 
             self.show_data()
             self.clear_line()
@@ -282,7 +283,7 @@ class form(QWidget):
         try:
             id = int(self.line_id.text())                 #id = int(input("Id for delete: "))
         
-            self.message = self.manager.delete_stu(id)
+            self.message = self.user.delete_stu(id)
         
             self.show_data()
             self.clear_line()
