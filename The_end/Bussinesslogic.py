@@ -69,6 +69,11 @@ class manager:
                     query += f"{column} = '{value}'"
         result = self.dal.execute_query(query)
         return result
+    def delete_tch(self, id):
+        query = f"DELETE FROM Teacher_list_Tables WHERE Id={id}"
+        message = self.dal.execute_non_query(query)
+        return message
+
 class Student:
     def __init__(self, db_path="C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/Stu_list.db"):
         self.dal = DataAccess(db_path=db_path)

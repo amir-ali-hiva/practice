@@ -71,7 +71,7 @@ class form(QWidget):
 
         #طراحی دکمه ها
 
-        buttel = QPushButton("Show all")
+        buttel = QPushButton("Stu_list")
         buttel.clicked.connect(self.show_data)
         button_layout.addWidget(buttel, 0, 0 , 1, 1)
 
@@ -102,6 +102,23 @@ class form(QWidget):
         buttel = QPushButton("Sign in")
         buttel.clicked.connect(self.sign_in)
         button_layout.addWidget(buttel, 0, 3, 1, 1)
+                                                        #/////////////////////////
+        buttel = QPushButton("Teacher_list")
+        buttel.clicked.connect(self.sign_in)
+        button_layout.addWidget(buttel, 2, 0, 1, 1)
+
+        buttel = QPushButton("Insert_Teacher")
+        buttel.clicked.connect(self.sign_in)
+        button_layout.addWidget(buttel, 2, 1, 1, 1)
+
+        buttel = QPushButton("Delete_Teacher")
+        buttel.clicked.connect(self.teacher_delete)
+        button_layout.addWidget(buttel, 2, 2, 1, 1)
+
+        buttel = QPushButton("Update_Teacher")
+        buttel.clicked.connect(self.sign_in)
+        button_layout.addWidget(buttel, 2, 3, 1, 1)
+
                #*******************************************************************************
         radio = QRadioButton("Starts With")
         radios_layout.addWidget(radio, 0, 0, 1, 1)
@@ -130,6 +147,23 @@ class form(QWidget):
         widget = QWidget()
         self.setLayout(main_layout)
 
+    def teacher_list(self):
+        pass
+    def teacher_delete(self):
+        try:
+            id = int(self.line_id.text())                 
+        
+            self.message = self.user.delete_tch(id)
+        
+            self.teacher_list()
+            self.clear_line()
+            self.massege_data() 
+        
+        except Exception as e:
+            QMessageBox.warning(self, "Delete Error", str(e))
+    def insert_teacher(self):
+        pass
+
     def loging(self):
     #   ---------------------------------------------------------------------------------------------------------------------------
         dialog = QDialog(self)
@@ -146,7 +180,6 @@ class form(QWidget):
         user_combo.addItems(["Manager", "Teacher", "Student"])
         layout.addWidget(user_combo)
 
-    # فیلد نام کاربری و رمز عبور (فقط برای دانش‌آموز)
         username_label = QLabel("Username:")
         username_edit = QLineEdit()
         password_label = QLabel("Password:")
@@ -158,7 +191,6 @@ class form(QWidget):
         layout.addWidget(password_label)
         layout.addWidget(password_edit)
 
-    # دکمه‌های تایید و لغو
         buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(dialog.accept)
         buttons.rejected.connect(dialog.reject)
@@ -170,19 +202,16 @@ class form(QWidget):
             user_type = user_combo.currentText()
 
             if user_type == "Manager":
-                self.user = self.manager   # از قبل ساختی
+                self.user = self.manager   
                 QMessageBox.information(self, "Login", "Manager login successful")
 
             elif user_type == "Teacher":
-                self.user = teacher()      # باید کلاس teacher توی Businesslogic تعریف شده باشه
+                self.user = teacher()      
                 QMessageBox.information(self, "Login", "Teacher login successful")
 
             elif user_type == "Student":
                 self.user = Student()
                 QMessageBox.information(self, "Login", "Student login successful")
-
-
-
     def sign_in(self):
         QMessageBox.warning(self, "Sign in Error", str("This button belongs to God. Please log in."))
     def set_columns_width(self):
