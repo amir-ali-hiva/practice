@@ -18,6 +18,8 @@ class form(QWidget):
         self.resize(600, 600)
         self.setStyleSheet("background-color: rgb( 160, 179, 96 )")
         
+        self.loging()
+        
         radios_layout = QGridLayout()
         main_layout = QGridLayout()
         button_layout = QGridLayout()
@@ -176,10 +178,10 @@ class form(QWidget):
                 QMessageBox.information(self, "Login", "Teacher login successful")
 
             elif user_type == "Student":
-                username = username_edit.text()
-                password = password_edit.text()
-                self.user = Student(username, password)  # باید کلاس Student هم داشته باشی
-                QMessageBox.information(self, "Login", f"Student login:\nUsername: {username}")
+                self.user = Student()
+                QMessageBox.information(self, "Login", "Student login successful")
+
+
 
     def sign_in(self):
         QMessageBox.warning(self, "Sign in Error", str("This button belongs to God. Please log in."))
