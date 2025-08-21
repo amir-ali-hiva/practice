@@ -130,25 +130,37 @@ class form(QWidget):
         buttel.clicked.connect(self.exit_form)
         button_layout.addWidget(buttel, 1, 2 , 1, 1)
 
-        tables = QTableView()
+        self.table = QTableView()
+        self.table.doubleClicked.connect(self.show_data_topel)
+        tables_layout.addWidget(self.table, 0, 0, 1, 1)
 
-        tables_layout.addWidget(tables, 0, 0, 1, 1)
 
         main_layout.addLayout(box_layout, 0, 0)#bakes va laibel 
         main_layout.addLayout(button_layout, 1, 0) #دکمه
-        main_layout.addLayout(tables_layout, 2, 0)
-
+        main_layout.addLayout(tables_layout, 2, 0)  # سرچ                  سرج
+        main_layout.addLayout(tables_layout, 3, 0)
+        widget = QWidget()
         self.setLayout(main_layout)
+        #self.setCentralWidget(widget)
+    
+    def set_columns_width(self):
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+
     def show_data(self):
-     
+
         self.rows = self.manager.show_stu()
-
-
-       
+        if isinstance(self.rows, str):  # اگر خطا برگردوند
+            QMessageBox.critical(self, "Error", self.rows)
+            return
         model = Model(self.rows)
-        
         self.table.setModel(model)
         self.set_columns_width()
+     
+        #self.rows = self.manager.show_stu()
+        #model = Model(self.rows) 
+        #self.table.setModel(model)
+        #self.set_columns_width()
     def search_data(self):
         pass
     def insert_data(self):
@@ -165,8 +177,8 @@ class form(QWidget):
             self.show_data()
             self.clear_line()
             self.massege_data() 
-        except:
-            pass           
+        except Exception as e:
+            QMessageBox.warning(self, "Insert Error", str(e))          
     def update_data(self):
         try:
     
@@ -181,8 +193,8 @@ class form(QWidget):
             self.show_data()
             self.clear_line()
             self.massege_data()
-        except:
-            pass
+        except Exception as e:
+            QMessageBox.warning(self, "Update Error", str(e))
     def delete_data(self):
         try:
             id = int(self.line_id.text())                 #id = int(input("Id for delete: "))
@@ -193,8 +205,8 @@ class form(QWidget):
             self.clear_line()
             self.massege_data() 
         
-        except:
-            pass
+        except Exception as e:#       e  متن خطاییه که خود پایتون میده
+            QMessageBox.warning(self, "Delete Error", str(e))
     def exit_form(self):
         result = QMessageBox.question(self,
             "Exit!!!!!???",
@@ -205,6 +217,14 @@ class form(QWidget):
             
             QApplication.quit() #این روش تمیزتر از exit()
     
+    def show_data_topel(self, index):
+        row_index = index.row()
+        self.line_id.setText(str(self.rows[row_index][0]))
+        self.line_name.setText(str(self.rows[row_index][1]))
+        self.line_family.setText(str(self.rows[row_index][2]))
+        self.line_age.setText(str(self.rows[row_index][3]))
+        self.line_score.setText(str(self.rows[row_index][4]))
+
 
     def clear_line(self):
         self.line_name.setText("")
