@@ -48,14 +48,14 @@ class form(QWidget):
         box_layout.addWidget(label, 3, 0, 1, 1)
 
         self.line_age = QLineEdit()
-        self.line_age.textChanged.connect(self.only_digit)
+        #self.line_age.textChanged.connect(self.only_digit)
         box_layout.addWidget(self.line_age, 3, 1, 1, 1)
 
         label = QLabel("score ")
         box_layout.addWidget(label, 4, 0, 1, 1)
 
         self.line_score = QLineEdit()
-        self.line_score.textChanged.connect(self.only_digit)
+        #self.line_score.textChanged.connect(self.only_digit)
         #self.line_score.addItems(QColor(0,0,0))
         box_layout.addWidget(self.line_score, 4, 1, 1, 1)
 
@@ -104,6 +104,8 @@ class form(QWidget):
         radios_layout.addWidget(radio, 0, 3, 1, 1)
 
         self.table = QTableView()
+        self.table.setIconSize(QSize(48, 48))   # آیکن‌ها بشن 48x48
+        self.table.verticalHeader().setDefaultSectionSize(50)  # ارتفاع هر ردیف 50 بشه
         self.table.doubleClicked.connect(self.show_data_topel)
         tables_layout.addWidget(self.table, 0, 0, 1, 1)
 
@@ -264,8 +266,8 @@ class form(QWidget):
     def only_digit(self, line):
         new_text = re.sub("[^0-9]", "", line)
         self.line_id.setText(new_text)
-        self.line_age.setText(new_text)
-        self.line_score.setText(new_text)       
+        #self.line_age.setText(new_text)
+        #self.line_score.setText(new_text)       
 
 class Model(QAbstractTableModel):
     def __init__(self, rows) -> None:
@@ -299,9 +301,9 @@ class Model(QAbstractTableModel):
             if index.column() == 4:   # ستون Score
                 score = int(self.rows[index.row()][index.column()])
                 if score >= 70:                   #***********************************/چرا کار نمیکنه\*****************************
-                    return QIcon("accept.png")
+                    return QIcon("C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/accept.png")
                 else:
-                    return QIcon("rejected.png")
+                    return QIcon("C:/barname nevisy/programing/Python/pythonProject12/practice/The_end/rejected.png")
 
 
             
