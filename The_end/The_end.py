@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
+from PyQt6.QtCore import *
 from Bussinesslogic import manager
+from PyQt6.QtGui import *
 from Bussinesslogic import *
 from DataAccess import *
 import sys
@@ -28,36 +30,44 @@ class Model(QAbstractTableModel):
             if orientation == Qt.Orientation.Vertical:
                 return section + 1
 
-    def data(self, index: QModelIndex, role: int = ...):            # پردازش روی داده ها
+    def data(self, index: QModelIndex, role: int = ...):    # پردازش روی داده ها
         value = f"{self.rows[index.row()][index.column()]}"
-        if role == Qt.ItemDataRole.DisplayRole:                     # اگر هدفت نمایش داده بود
+        if role == Qt.ItemDataRole.DisplayRole:                     
             return value
         
-        #if role == Qt.ItemDataRole.DecorationRole:                  # اگر هدفت گذاشتن آیکون بود
-        #    if str(value).lower() in ["hamid", "alireza", "amir", "ali"]:
-        #        return QIcon("1.png")
+
+        if role == Qt.ItemDataRole.DecorationRole:
+            if index.column() == 4:   # ستون Score
+                score = int(self.rows[index.row()][index.column()])
+                if score >= 70:                   #***********************************/چرا کار نمیکنه\*****************************
+                    return QIcon("accept.png")
+                else:
+                    return QIcon("rejected.png")
+
+
             
-        #if role == Qt.ItemDataRole.BackgroundRole:                  # اگر هدفت تغییر رنگ بک گراند بود
-        #    if index.row() % 2 == 0:
-        #        return QColor(129, 236, 236)
-        #    else:
-        #        return QColor(232, 67, 147)
+        if role == Qt.ItemDataRole.BackgroundRole:  #color for backgrond tabels
+            if index.row() % 2 == 0:
+                return QColor(139, 147, 255)
+            else:
+                return QColor(255, 113, 205)
             
-        #if role == Qt.ItemDataRole.ForegroundRole:                  # اگر هدفت تغییر رنگ متن بود
-        #    if str(value).lower() == "hamid":
-        #        return QColor("blue")
+        if role == Qt.ItemDataRole.ForegroundRole:  # color tabels txet
+            if index.row() % 2 == 0:
+                return QColor(84, 18, 18)
+            else:
+                return QColor(30, 3, 66)
             
-        if role == Qt.ItemDataRole.TextAlignmentRole:               # اگر هدفت تراز متن بود
+        if role == Qt.ItemDataRole.TextAlignmentRole:  # اگر هدفت وسط چین متن بود
             return Qt.AlignmentFlag.AlignCenter
         
-        #if role == Qt.ItemDataRole.FontRole:                        # اگر هدفت تغییر فونت باشد
-        #    if str(value).lower() == "hamid":
-        #        return QFont("cursive", 12, 4, italic=True)
+        if role == Qt.ItemDataRole.FontRole:              #  font txet    
+            return QFont("Arial", 10, 8, italic=False)
             
-    def rowCount(self, parent: QModelIndex = ...) -> int:           # باید تعداد سطرها را بدهد
-        return len(self.rows)
+    def rowCount(self, parent: QModelIndex = ...) :          
+        return len(self.rows)      #len اندازه را میده
     
-    def columnCount(self, parent: QModelIndex = ...) -> int:        # باید تعداد ستون ها را بدهد
+    def columnCount(self, parent: QModelIndex = ...):        
         return len(self.rows[0])
 
 
@@ -138,7 +148,7 @@ class form(QWidget):
         main_layout.addLayout(box_layout, 0, 0)#bakes va laibel 
         main_layout.addLayout(button_layout, 1, 0) #دکمه
         main_layout.addLayout(tables_layout, 2, 0)  # سرچ                  سرج
-        main_layout.addLayout(tables_layout, 3, 0)
+        #main_layout.addLayout(tables_layout, 3, 0)
         widget = QWidget()
         self.setLayout(main_layout)
         #self.setCentralWidget(widget)
