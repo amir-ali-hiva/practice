@@ -16,13 +16,15 @@ class Model(QAbstractTableModel):
             if orientation == Qt.Orientation.Horizontal:
                 match section:
                     case 0:
-                        return "Name"
-                    case 1:
-                        return "Family"
-                    case 2:
                         return "Id"
+                    case 1:
+                        return "Name"
+                    case 2:
+                        return "Family"
                     case 3:
                         return "Age"
+                    case 4:
+                        return "Score"
             if orientation == Qt.Orientation.Vertical:
                 return section + 1
 
@@ -138,12 +140,13 @@ class form(QWidget):
 
         self.setLayout(main_layout)
     def show_data(self):
+     
+        self.rows = self.manager.show_stu()
 
-        self.message = self.manager.show_stu()
 
-
-        self.rows = self.message.fetchall()
+       
         model = Model(self.rows)
+        
         self.table.setModel(model)
         self.set_columns_width()
     def search_data(self):
