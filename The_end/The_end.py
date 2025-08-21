@@ -6,6 +6,7 @@ from PyQt6.QtGui import *
 from Bussinesslogic import *
 from DataAccess import *
 import sys
+import re
 
 
 
@@ -16,7 +17,7 @@ class form(QWidget):
         self.resize(500, 500)
         self.setStyleSheet("background-color: rgb( 160, 179, 96 )")
         
-
+        radios_layout = QGridLayout()
         main_layout = QGridLayout()
         box_layout = QGridLayout()
         button_layout = QGridLayout()
@@ -40,19 +41,30 @@ class form(QWidget):
         box_layout.addWidget(label, 2, 0, 1, 1)
 
         self.line_id = QLineEdit()
+        self.line_id.textChanged.connect(self.only_digit)
         box_layout.addWidget(self.line_id, 2, 1, 1, 1)
 
         label = QLabel("Age ")
         box_layout.addWidget(label, 3, 0, 1, 1)
 
         self.line_age = QLineEdit()
+        self.line_age.textChanged.connect(self.only_digit)
         box_layout.addWidget(self.line_age, 3, 1, 1, 1)
 
         label = QLabel("score ")
         box_layout.addWidget(label, 4, 0, 1, 1)
 
         self.line_score = QLineEdit()
+        self.line_score.textChanged.connect(self.only_digit)
+        #self.line_score.addItems(QColor(0,0,0))
         box_layout.addWidget(self.line_score, 4, 1, 1, 1)
+
+        label = QLabel("Filter: ")
+        box_layout.addWidget(label, 5, 0, 1, 1)
+
+        self.combo_box = QComboBox()
+        self.combo_box.addItems(["------------","Name","Family","Id","Age","Score"])
+        box_layout.addWidget(self.combo_box, 5, 1, 1, 1)
 
         #طراحی دکمه ها
         buttel = QPushButton("Show all")
@@ -60,6 +72,7 @@ class form(QWidget):
         button_layout.addWidget(buttel, 0, 0 , 1, 1)
 
         buttel = QPushButton("Search")
+        buttel.clicked.connect(self.search_data)
         button_layout.addWidget(buttel, 0, 1 , 1, 1)
 
         buttel = QPushButton("Insert")
@@ -77,6 +90,18 @@ class form(QWidget):
         buttel = QPushButton("Exit")
         buttel.clicked.connect(self.exit_form)
         button_layout.addWidget(buttel, 1, 2 , 1, 1)
+
+        radio = QRadioButton("Starts With")
+        radios_layout.addWidget(radio, 0, 0, 1, 1)
+
+        radio = QRadioButton("Ends With")
+        radios_layout.addWidget(radio, 0, 1, 1, 1)
+
+        radio = QRadioButton("Contains")
+        radios_layout.addWidget(radio, 0, 2, 1, 1)
+
+        radio = QRadioButton("Equals")
+        radios_layout.addWidget(radio, 0, 3, 1, 1)
 
         self.table = QTableView()
         self.table.doubleClicked.connect(self.show_data_topel)
@@ -109,7 +134,58 @@ class form(QWidget):
         #self.table.setModel(model)
         #self.set_columns_width()
     def search_data(self):
-        pass
+        try:
+            filter_number = "0" # input("[0:Name, 1:Family, 2:Age, 3:Id]: ")
+            condition_number = "0" # input("[0:Starts With, 1: Ends With, 2: Contains, 3:Equals]: ")
+
+            query = f"SELECT * FROM TBLStudents Where"
+            match filter_number:
+                case "0":
+                    filter = "Id"
+                    value = self.line_id.text()
+                case "1":
+                    filter = "Name"
+                    value = self.line_name.text()
+                case "2":
+                    filter = "Family"
+                    value = self.line_family.text()
+                case "3":
+                    filter = "Age"
+                    value = self.line_age.text()
+                case "4":
+                    filter = "Score"
+                    value = self.line_score.text()
+
+                case _:
+                    QMessageBox.warning(self, "Search Error", str(e))
+                    return
+
+            match condition_number:
+                case "0":
+                    query = f"{query} {filter} LIKE '{value}%'"
+                case "1":
+                    query = f"{query} {filter} LIKE '%{value}'"
+                case "2":
+                    query = f"{query} {filter} LIKE '%{value}%'"
+                case "3":
+                    if filter in ["Age", "Id","Score"]:
+                        query = f"{query} {filter} = {value}"
+                    else:
+                        query = f"{query} {filter} = '{value}'"
+                case _:
+                    QMessageBox.warning(self, "Search Error", str(e))
+                    return
+            
+            with sqlite3.connect("DBStudents.db") as connection:
+                cursor = connection.cursor()
+                results = cursor.execute(query)
+                self.rows = results.fetchall()
+            model = Model(self.rows)
+            self.table.setModel(model)
+            self.set_columns_width()
+                
+        except Exception as e:
+            QMessageBox.warning(self, "Search Error", str(e))
     def insert_data(self):
         try:
             name = self.line_name.text()
@@ -183,7 +259,13 @@ class form(QWidget):
     def massege_data(self):
         msg_box = QMessageBox()
         msg_box.setText(self.message)
-        msg_box.exec()       
+        msg_box.exec()
+
+    def only_digit(self, line):
+        new_text = re.sub("[^0-9]", "", line)
+        self.line_id.setText(new_text)
+        self.line_age.setText(new_text)
+        self.line_score.setText(new_text)       
 
 class Model(QAbstractTableModel):
     def __init__(self, rows) -> None:
@@ -246,6 +328,7 @@ class Model(QAbstractTableModel):
     
     def columnCount(self, parent: QModelIndex = ...):        
         return len(self.rows[0])
+    
 
 app = QApplication(sys.argv)
 form = form()
