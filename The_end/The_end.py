@@ -323,7 +323,7 @@ class form(QWidget):
             self.rows = self.user.serch_stu(column, value, condition)
 
     
-            model = Model(self.rows)
+            model = Model_stu(self.rows)
             self.table.setModel(model)
             self.set_columns_width()
 
